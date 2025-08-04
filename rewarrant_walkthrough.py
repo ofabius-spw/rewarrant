@@ -172,18 +172,6 @@ def plot_mock_degradation():
 
 # Proposal output section
 def show_proposal():
-    st.subheader("Proposed Warranty Terms & Conditions")
-    st.markdown("""
-    - Up to 4 cycles per day allowed under new warranty  
-    - Warranty coverage for 10 years or 4000 cycles, whichever comes first  
-    - OEM guarantees max capacity degradation below 20% within warranty period  
-    - Compliance monitored via ReWarrant platform  
-    """)
-
-    st.subheader("Modeled Battery Degradation")
-    plot_mock_degradation()
-
-    st.subheader("Projected Financial Impact (per MW/year)")
 
     years = np.arange(1, 11)
 
@@ -244,7 +232,7 @@ def show_proposal():
 
 # OEM Tab logic
 def oem_tab():
-    with st.expander("Define Degradation Model Variables"):
+    with st.expander("1 Define Degradation Model Variables"):
         model_choice = st.radio(
             "Select base degradation model:",
             [
@@ -280,18 +268,25 @@ def oem_tab():
 
         st.session_state["degradation_factors"] = influence_factors
 
-    st.markdown("---")
+    with st.expander("2 Proposed warranty contract structure"):
+   
+        st.markdown("""
+                    The following warranty terms are proposed after consulting wioth the optimiser:
+        - Up to 4 cycles per day allowed under new warranty  
+        - Warranty coverage for 10 years or 4000 cycles, whichever comes first  
+        - OEM guarantees max capacity degradation below 20% within warranty period  
+        - Compliance monitored via ReWarrant platform 
+        - Optimiser premium based on increased servicing costs
+        - Future market participation may trigger additional agreement amendments, to be agreed upon by both parties 
+        """)
 
-    if "skip_optimiser" not in st.session_state:
-        st.session_state["skip_optimiser"] = False
-    st.info("Proposal in progress. Awaiting input from Optimiser and Integrator to complete.")
-    skip = st.checkbox("Show example output anyway, without completing other tabs", value=st.session_state["skip_optimiser"])
-    st.session_state["skip_optimiser"] = skip
-    if skip:
+    with st.expander("3 Impact on degradation"):
+
+        plot_mock_degradation()
+    with st.expander("4 Financial impact"):
         show_proposal()
 
-    st.markdown("---")
-    st.subheader("📝 Generate Warranty Contract")
+    # with st.expander("3. Contract"):
 
     # Optional name inputs if not set earlier
     st.text_input("OEM Company Name", key="oem_name", value="BatteryCo Ltd.")
@@ -328,15 +323,11 @@ def oem_tab():
 
 
 
-# Placeholder tabs
-def integrator_tab():
-    st.header("Integrator View")
-    st.write("Placeholder for Integrator inputs and interactions.")
 
 def optimiser_tab():
-    st.header("Optimiser View")
+    st.header("For optimisers")
 
-    with st.expander("Battery Parameters (provided by OEM)"):
+    with st.expander("1 Battery Parameters (provided by OEM)"):
         st.markdown("""
         These are battery details provided by the OEM and the degradation model you will use.
         """)
@@ -353,7 +344,7 @@ def optimiser_tab():
         st.markdown(f"- **Degradation Model:** {degradation_model}")
         st.markdown(f"- **Degradation Factors:** {degradation_factors}")
 
-    with st.expander("Project financing and incentives"):
+    with st.expander("2 Project financing and incentives"):
         st.markdown("""
         Specify the financing and incentives for the battery project.
         This will help in calculating the financial impact of the warranty proposal.
@@ -375,7 +366,7 @@ def optimiser_tab():
             key="project_goals"
         )
 
-    with st.expander("Desired Market Participation and Usage"):
+    with st.expander("3 Desired Market Participation and Usage"):
         st.markdown("Select markets you are active in and specify desired daily cycles and expected revenues.")
 
         markets = {
@@ -419,23 +410,26 @@ def optimiser_tab():
 
         st.session_state["optimiser_markets"] = markets
 
-    with st.expander("Warranty Restructuring Optimization"):
-        st.write("This section will include the trading strategy optimization interface and results.")
+    with st.expander("4 Warranty Restructuring Optimization"):
+        st.write("Placeholder. This section will outline the suggested new warranty structure.")
 
-    with st.expander("Step 4: Simulation and Financial Impact (Placeholder)"):
-        st.write("This section will show simulated outputs of revenues and warranty costs based on inputs.")
+    with st.expander(" 5 Financial Impact"):
+        st.write("Placeholder. This section will show expected revenues and warranty costs based on the proposed structure.")
 
-    st.markdown("---")
-    st.info("After setting your market participation, we will simulate revenue and degradation outcomes.")
+
+# Placeholder tab for integrators
+def integrator_tab():
+    st.header("For integrators")
+    st.write("We are working on a warranty contract with the optimiser and the OEM. This tab is work in progress. Hang tight...")
 
 # Tab layout
-tabs = st.tabs(["OEM View", "Integrator View", "Optimiser View"])
+tabs = st.tabs(["For OEMs", "For Optimisers", "For Integrators"])
 
 with tabs[0]:
     oem_tab()
 
 with tabs[1]:
-    integrator_tab()
+    optimiser_tab()
 
 with tabs[2]:
-    optimiser_tab()
+    integrator_tab()
